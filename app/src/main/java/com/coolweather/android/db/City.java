@@ -4,17 +4,16 @@ import org.litepal.annotation.Column;
 import org.litepal.crud.LitePalSupport;
 
 public class City extends LitePalSupport {
-    @Column(unique = true)
-    private String id;
+    private int code;
     private String name;
-    private String provinceId;
+    private int provinceId;
 
-    public String getId() {
-        return id;
+    public int getCode() {
+        return code;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setCode(int code) {
+        this.code = code;
     }
 
     public String getName() {
@@ -25,11 +24,11 @@ public class City extends LitePalSupport {
         this.name = name;
     }
 
-    public String getProvinceId() {
+    public int getProvinceId() {
         return provinceId;
     }
 
-    public void setProvinceId(String provinceId) {
+    public void setProvinceId(int provinceId) {
         this.provinceId = provinceId;
     }
 }
