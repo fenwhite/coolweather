@@ -5,6 +5,8 @@ import android.text.TextUtils;
 import com.coolweather.android.db.City;
 import com.coolweather.android.db.Province;
 import com.coolweather.android.db.Region;
+import com.coolweather.android.gson.GSONRegion;
+import com.coolweather.android.gson.Weather;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -114,34 +116,20 @@ public class Utility {
         return false;
     }
 
-
-    public class GSONRegion{
-        private int id;
-        private String name;
-        private String weatherId;
-
-        public int getId() {
-            return id;
+    /**
+     * 处理从服务器接受天气数据
+     * @param response
+     * @return 正常处理返回GSON类Weather,异常处理返回null
+     */
+    public static Weather handleWeatherResponse(String response){
+        try {
+            JSONObject obj = new JSONObject(response);
+            JSONArray arr = obj.getJSONArray("HeWeather");
+            String weatherContent = arr.getJSONObject(0).toString();
+            return new Gson().fromJson(weatherContent,Weather.class);
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
-
-        public void setId(int id) {
-            this.id = id;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public String getWeatherId() {
-            return weatherId;
-        }
-
-        public void setWeatherId(String weatherId) {
-            this.weatherId = weatherId;
-        }
+        return null;
     }
 }

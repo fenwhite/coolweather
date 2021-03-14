@@ -5,14 +5,42 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activity.MainActivity">
+
+<!--    <FrameLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent">-->
+<!--        <fragment-->
+<!--            android:id="@+id/choose_area_fragment"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:name="com.coolweather.android.activity.ChooseAreaFragment"/>-->
+<!--    </FrameLayout>-->
+
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <fragment
-            android:id="@+id/choose_area_fragment"
+        android:layout_height="match_parent"
+        android:background="@color/colorPrimary">
+        <ScrollView
+            android:id="@+id/weather_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:name="com.coolweather.android.activity.ChooseAreaFragment"/>
+            android:scrollbars="none"
+            android:overScrollMode="never">
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <include layout="@layout/nowinfo"/>
+
+                <include layout="@layout/forecast"/>
+
+<!--            TODO    AQI-->
+
+                <include layout="@layout/suggestion"/>
+
+            </LinearLayout>
+        </ScrollView>
     </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

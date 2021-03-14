@@ -184,7 +184,7 @@ public class ChooseAreaFragment extends Fragment {
                     @Override
                     public void run() {
                         closeProgress();
-                        Toast.makeText(getContext(),"加载失败",Toast.LENGTH_SHORT);
+                        Toast.makeText(getContext(),"加载失败",Toast.LENGTH_SHORT).show();
                     }
                 });
             }
