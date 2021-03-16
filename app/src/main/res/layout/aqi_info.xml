@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/forecastBackground"
+    android:layout_margin="15dp">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:textColor="@color/forecastFront"
+            android:text="AQI指数"/>
+
+        <com.coolweather.android.view.CircleProgressView
+            android:id="@+id/aqi_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:info_text="轻微污染"
+            app:progress_color="#1C86EE"
+            app:progress_max="500"
+            app:progress_radius="60dp"
+            app:progress_val="12"
+            app:progress_width="5dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:textColor="@color/forecastFront"
+            android:text="PM2.5指数"/>
+
+        <com.coolweather.android.view.CircleProgressView
+            android:id="@+id/pm25_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:progress_color="#1C86EE"
+            app:progress_max="500"
+            app:progress_radius="60dp"
+            app:progress_val="23"
+            app:progress_width="5dp" />
+    </LinearLayout>
+
+</LinearLayout>

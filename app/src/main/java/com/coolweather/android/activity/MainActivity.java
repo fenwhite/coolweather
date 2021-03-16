@@ -19,6 +19,7 @@ import com.coolweather.android.gson.Forecast;
 import com.coolweather.android.gson.Weather;
 import com.coolweather.android.util.HttpUtil;
 import com.coolweather.android.util.Utility;
+import com.coolweather.android.view.CircleProgressView;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -37,6 +38,8 @@ public class MainActivity extends AppCompatActivity {
     private TextView comfBrf,comfTxt;
     private TextView carwashBrf,carwashTxt;
     private TextView sportBrf,sportTxt;
+    private CircleProgressView aqi;
+    private CircleProgressView pm25;
 
 
     @Override
@@ -56,6 +59,8 @@ public class MainActivity extends AppCompatActivity {
         carwashTxt = (TextView)findViewById(R.id.carwash_txt);
         sportBrf = (TextView)findViewById(R.id.sport_brf);
         sportTxt = (TextView)findViewById(R.id.sport_txt);
+        aqi = (CircleProgressView)findViewById(R.id.aqi_progress);
+        pm25 = (CircleProgressView)findViewById(R.id.pm25_progress);
 
         SharedPreferences prefs = getPreferences(Context.MODE_PRIVATE);
         String weatherString =prefs.getString("weather",null);
@@ -118,6 +123,10 @@ public class MainActivity extends AppCompatActivity {
         carwashTxt.setText(weather.suggestion.carWash.info);
         sportBrf.setText(weather.suggestion.sport.suit);
         sportTxt.setText(weather.suggestion.sport.info);
+        aqi.setCurrent(Integer.valueOf(weather.aqi.city.aqi));
+        aqi.setText(weather.aqi.city.qlty);
+        pm25.setCurrent(Integer.valueOf(weather.aqi.city.pm25));
+        pm25.setText(weather.aqi.city.qlty);
         forecastLayout.removeAllViews();
         for (Forecast forecast: weather.forecastList) {
             View view = LayoutInflater.from(this).inflate(R.layout.forecast_item,forecastLayout,false);
@@ -139,5 +148,13 @@ public class MainActivity extends AppCompatActivity {
         tmp.setCharAt(7,'月');
         tmp.append('日');
         return tmp.toString();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(aqi!=null){
+            aqi.destroy();
+        }
     }
 }
