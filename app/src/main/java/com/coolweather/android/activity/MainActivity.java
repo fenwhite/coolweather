@@ -152,9 +152,9 @@ public class MainActivity extends AppCompatActivity {
         carwashTxt.setText(weather.suggestion.carWash.info);
         sportBrf.setText(weather.suggestion.sport.suit);
         sportTxt.setText(weather.suggestion.sport.info);
-        aqi.setCurrent(Integer.valueOf(weather.aqi.city.aqi));
+        aqi.startAnimProgress(Integer.valueOf(weather.aqi.city.aqi),5000);
         aqi.setText(weather.aqi.city.qlty);
-        pm25.setCurrent(Integer.valueOf(weather.aqi.city.pm25));
+        pm25.startAnimProgress(Integer.valueOf(weather.aqi.city.pm25),5000);
         pm25.setText(weather.aqi.city.qlty);
         forecastLayout.removeAllViews();
         for (Forecast forecast: weather.forecastList) {

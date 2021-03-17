@@ -133,10 +133,18 @@ public class CircleProgressView extends View {
         }
     }
 
-    public void startAnimProgress(int current,int duration){
+    public void startAnimProgress(final int current, int duration){
         mAnimator = ValueAnimator.ofInt(0, current);
         mAnimator.setDuration(duration);
-        mAnimator.setInterpolator(new LinearInterpolator());
+        mAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                int animatedValue = (int) animation.getAnimatedValue();
+                if(animatedValue!=current){
+                    setCurrent(animatedValue);
+                }
+            }
+        });
         mAnimator.start();
     }
 
