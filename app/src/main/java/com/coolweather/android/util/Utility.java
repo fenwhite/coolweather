@@ -132,4 +132,14 @@ public class Utility {
         }
         return null;
     }
+
+    public static String handleAnimePic(String response){
+        try {
+            JSONObject obj = new JSONObject(response);
+            return obj.getString("imgurl");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return "https://mfiles.alphacoders.com/894/thumb-894710.png";
+    }
 }

@@ -20,12 +20,18 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/colorPrimary">
+        <ImageView
+            android:id="@+id/random_bg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"/>
         <ScrollView
             android:id="@+id/weather_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scrollbars="none"
-            android:overScrollMode="never">
+            android:overScrollMode="never"
+            android:fitsSystemWindows="true">
             <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="match_parent"

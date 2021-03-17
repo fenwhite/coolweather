@@ -4,16 +4,20 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowInsets;
+import android.view.WindowInsetsController;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.coolweather.android.R;
 import com.coolweather.android.gson.Forecast;
 import com.coolweather.android.gson.Weather;
@@ -24,6 +28,8 @@ import com.coolweather.android.view.CircleProgressView;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -33,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
     private ScrollView weatherLayout;
+    private ImageView bg;
     private TextView degree, elseInfo,regionName,updateTime;
     private LinearLayout forecastLayout;
     private TextView comfBrf,comfTxt;
@@ -45,6 +52,17 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(Build.VERSION.SDK_INT >= 30){
+            getWindow().getDecorView().getWindowInsetsController().hide(
+                    android.view.WindowInsets.Type.statusBars()
+                            | android.view.WindowInsets.Type.navigationBars()
+            );
+        }else if(Build.VERSION.SDK_INT >= 16){
+            View decorView = getWindow().getDecorView();
+            // Hide the status bar.
+            int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
+            decorView.setSystemUiVisibility(uiOptions);
+        }
         setContentView(R.layout.activity_main);
         //init
         weatherLayout = (ScrollView)findViewById(R.id.weather_layout);
@@ -61,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
         sportTxt = (TextView)findViewById(R.id.sport_txt);
         aqi = (CircleProgressView)findViewById(R.id.aqi_progress);
         pm25 = (CircleProgressView)findViewById(R.id.pm25_progress);
+        bg = (ImageView)findViewById(R.id.random_bg);
 
         SharedPreferences prefs = getPreferences(Context.MODE_PRIVATE);
         String weatherString =prefs.getString("weather",null);
@@ -71,6 +90,16 @@ public class MainActivity extends AppCompatActivity {
             // todo change weatherId
             weatherLayout.setVisibility(View.INVISIBLE);
             requestWeather("CN101210107");
+        }
+        String picUrl = prefs.getString("pic",null);
+        String urlTime = prefs.getString("picTime","1998-11-10");
+        Date date = new Date();
+        SimpleDateFormat format = new SimpleDateFormat("YYYY-MM-DD");
+        String today = format.format(date);
+        if(picUrl!=null && today.equals(urlTime)){
+            Glide.with(this).load(picUrl).into(bg);
+        }else{
+            loadPic();
         }
     }
 
@@ -139,6 +168,35 @@ public class MainActivity extends AppCompatActivity {
             forecastLayout.addView(view);
         }
         weatherLayout.setVisibility(View.VISIBLE);
+    }
+
+    private void loadPic(){
+        String apiPic = "https://api.btstu.cn/sjbz/api.php?method=mobile&lx=dongman&format=json";
+        HttpUtil.requestGet(apiPic, new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                final String picUrl = Utility.handleAnimePic(response.body().string());
+                Log.d(TAG, "picture url:"+picUrl);
+                SharedPreferences.Editor editor = getPreferences(Context.MODE_PRIVATE).edit();
+                editor.putString("pic",picUrl);
+                Date date = new Date();
+                SimpleDateFormat format = new SimpleDateFormat("YYYY-MM-DD");
+                String today = format.format(date);
+                editor.putString("picTime",today);
+                editor.apply();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Glide.with(MainActivity.this).load(picUrl).into(bg);
+                    }
+                });
+            }
+        });
     }
 
     private String dateFormat(String date){
