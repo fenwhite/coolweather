@@ -1,6 +1,7 @@
 package com.coolweather.android.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Context;
@@ -8,10 +9,12 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowInsets;
 import android.view.WindowInsetsController;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -48,9 +51,13 @@ public class MainActivity extends AppCompatActivity {
     private TextView sportBrf,sportTxt;
     private CircleProgressView aqi;
     private CircleProgressView pm25;
+    private Button chooseArea;
 
-    private SwipeRefreshLayout swipeRefresh;
+    public SwipeRefreshLayout swipeRefresh;
+    public DrawerLayout drawer;
 
+    // 当前页面请求weather id
+    private String weatherIdtmp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,24 +90,22 @@ public class MainActivity extends AppCompatActivity {
         aqi = (CircleProgressView)findViewById(R.id.aqi_progress);
         pm25 = (CircleProgressView)findViewById(R.id.pm25_progress);
         bg = (ImageView)findViewById(R.id.random_bg);
+        chooseArea = (Button)findViewById(R.id.choose_area_button);
+        drawer = (DrawerLayout)findViewById(R.id.drawer_layout);
         swipeRefresh = (SwipeRefreshLayout)findViewById(R.id.swipe_refresh);
 
         SharedPreferences prefs = getPreferences(Context.MODE_PRIVATE);
         String weatherString =prefs.getString("weather",null);
         if(weatherString!=null){
             Weather weather = Utility.handleWeatherResponse(weatherString);
+            weatherIdtmp = weather.basic.weatherId;
             showWeather(weather);
         }else{
-            // todo change weatherId
             weatherLayout.setVisibility(View.INVISIBLE);
             requestWeather("CN101210107");
         }
         String picUrl = prefs.getString("pic",null);
-        String urlTime = prefs.getString("picTime","1998-11-10");
-        Date date = new Date();
-        SimpleDateFormat format = new SimpleDateFormat("YYYY-MM-DD");
-        String today = format.format(date);
-        if(picUrl!=null && today.equals(urlTime)){
+        if(picUrl!=null && isToday(prefs.getString("picTime","1998-11-10"))){
             Glide.with(this).load(picUrl).into(bg);
         }else{
             loadPic();
@@ -108,12 +113,18 @@ public class MainActivity extends AppCompatActivity {
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                requestWeather("CN101210107");
+                requestWeather(weatherIdtmp);
+            }
+        });
+        chooseArea.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                drawer.openDrawer(findViewById(R.id.choose_area));
             }
         });
     }
 
-    private void requestWeather(final String weatherId){
+    public void requestWeather(final String weatherId){
         String url = "http://guolin.tech/api/weather?cityid="+weatherId;
         Log.d(TAG, "request url is "+url);
         HttpUtil.requestGet(url, new Callback() {
@@ -140,6 +151,7 @@ public class MainActivity extends AppCompatActivity {
                             SharedPreferences.Editor editor = getPreferences(Context.MODE_PRIVATE).edit();
                             editor.putString("weather",responseText);
                             editor.apply();
+                            weatherIdtmp = weather.basic.weatherId;
                             showWeather(weather);
                         }else{
                             Toast.makeText(MainActivity.this,"获取天气信息失败",Toast.LENGTH_SHORT).show();
@@ -217,6 +229,17 @@ public class MainActivity extends AppCompatActivity {
         tmp.setCharAt(7,'月');
         tmp.append('日');
         return tmp.toString();
+    }
+
+    /**
+     * 判断时间是否为今天
+     * @param time YYYY-MM-DD
+     */
+    private boolean isToday(String time){
+        Date date = new Date();
+        SimpleDateFormat format = new SimpleDateFormat("YYYY-MM-DD");
+        String today = format.format(date);
+        return today.equals(time);
     }
 
     @Override

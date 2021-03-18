@@ -97,7 +97,12 @@ public class ChooseAreaFragment extends Fragment {
                     case LEVEL_REGION:
                         selectedRegion = regionList.get(position);
                         Log.d(TAG, "onItemClick: select region name:"+selectedRegion.getName());
-                        // todo: turn to weather info show activity
+                        if(getActivity() instanceof MainActivity){
+                            MainActivity mainActivity = (MainActivity)getActivity();
+                            mainActivity.drawer.closeDrawers();
+                            mainActivity.swipeRefresh.setRefreshing(true);
+                            mainActivity.requestWeather(selectedRegion.getWeatherId());
+                        }
                         break;
                 }
             }
