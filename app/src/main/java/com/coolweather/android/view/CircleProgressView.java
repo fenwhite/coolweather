@@ -51,7 +51,6 @@ public class CircleProgressView extends View {
             progressWidth = typedArray.getDimension(R.styleable.CircleProgressView_progress_width, dp2px(context,4));
             text = typedArray.getString(R.styleable.CircleProgressView_info_text);
             progressRadius = typedArray.getDimension(R.styleable.CircleProgressView_progress_radius,dp2px(context,30));
-            Log.d(TAG, "progressRadius: "+progressRadius);
             typedArray.recycle();
         }
 
@@ -82,15 +81,12 @@ public class CircleProgressView extends View {
         int computeWidth = 200;
         switch (widthModel){
             case MeasureSpec.UNSPECIFIED:
-                Log.d(TAG, "onMeasure: width measure model is UNSPECIFIED");;
                 computeWidth = (int)((progressWidth + progressRadius)*2 + 0.5f);
                 break;
             case MeasureSpec.AT_MOST:
-                Log.d(TAG, "onMeasure: height measure model is AT_MOST");
                 computeWidth = Math.max(width,(int)((progressWidth + progressRadius)*2 + 0.5f));
                 break;
             case MeasureSpec.EXACTLY:
-                Log.d(TAG, "onMeasure: width measure model is EXACTLY");
                 computeWidth = width;
                 break;
         }
@@ -99,15 +95,12 @@ public class CircleProgressView extends View {
         int computeHeight = 200;
         switch (heightModel){
             case MeasureSpec.UNSPECIFIED:
-                Log.d(TAG, "onMeasure: height measure model is UNSPECIFIED");;
                 computeHeight = (int)((progressWidth + progressRadius)*2 + 0.5f);
                 break;
             case MeasureSpec.AT_MOST:
-                Log.d(TAG, "onMeasure: height measure model is AT_MOST");
                 computeHeight = Math.max(height,(int)((progressWidth + progressRadius)*2 + 0.5f));
                 break;
             case MeasureSpec.EXACTLY:
-                Log.d(TAG, "onMeasure: height measure model is EXACTLY");
                 computeHeight = height;
                 break;
         }
@@ -117,7 +110,6 @@ public class CircleProgressView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        Log.d(TAG, "onDraw: getWidth is "+canvas.getWidth()+" and getHeight is "+canvas.getHeight());
         RectF rectf = new RectF(progressWidth,progressWidth, progressRadius * 2 + progressWidth ,  progressRadius * 2 + progressWidth);
         canvas.drawArc(rectf,120,300,false,bgPaint);
 
@@ -153,7 +145,6 @@ public class CircleProgressView extends View {
     }
 
     public void setCurrent(Integer current) {
-        Log.d(TAG, "setCurrent: "+current);
         this.current = current;
         invalidate();
     }
@@ -172,7 +163,6 @@ public class CircleProgressView extends View {
     }
 
     public void setText(String text) {
-        Log.d(TAG, "setText: "+text);
         this.text = text;
         invalidate();
     }

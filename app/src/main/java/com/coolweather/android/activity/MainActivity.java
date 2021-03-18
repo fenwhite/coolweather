@@ -1,6 +1,7 @@
 package com.coolweather.android.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -48,6 +49,8 @@ public class MainActivity extends AppCompatActivity {
     private CircleProgressView aqi;
     private CircleProgressView pm25;
 
+    private SwipeRefreshLayout swipeRefresh;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
         aqi = (CircleProgressView)findViewById(R.id.aqi_progress);
         pm25 = (CircleProgressView)findViewById(R.id.pm25_progress);
         bg = (ImageView)findViewById(R.id.random_bg);
+        swipeRefresh = (SwipeRefreshLayout)findViewById(R.id.swipe_refresh);
 
         SharedPreferences prefs = getPreferences(Context.MODE_PRIVATE);
         String weatherString =prefs.getString("weather",null);
@@ -101,6 +105,12 @@ public class MainActivity extends AppCompatActivity {
         }else{
             loadPic();
         }
+        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                requestWeather("CN101210107");
+            }
+        });
     }
 
     private void requestWeather(final String weatherId){
@@ -114,6 +124,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         Toast.makeText(MainActivity.this,"获取天气信息失败",Toast.LENGTH_SHORT).show();
+                        swipeRefresh.setRefreshing(false);
                     }
                 });
             }
@@ -133,6 +144,7 @@ public class MainActivity extends AppCompatActivity {
                         }else{
                             Toast.makeText(MainActivity.this,"获取天气信息失败",Toast.LENGTH_SHORT).show();
                         }
+                        swipeRefresh.setRefreshing(false);
                     }
                 });
 
@@ -200,7 +212,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private String dateFormat(String date){
-        Log.d(TAG, "date is "+date);
         StringBuffer tmp = new StringBuffer(date);
         tmp.setCharAt(4,'年');
         tmp.setCharAt(7,'月');
